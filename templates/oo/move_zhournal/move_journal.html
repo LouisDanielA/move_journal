@@ -1,0 +1,923 @@
+{% extends 'po/base.html' %}
+{% load static %}
+
+    <!-- Main content -->
+
+  {% block content %}
+
+
+    {% if request.user.is_authenticated %}
+  <script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+{% comment %} <script type="text/javascript" src="/static/select2.full.min.js"></script> {% endcomment %}
+{% comment %} <script src="{% static 'static/export/jquery-3.5.1.js' %}"></script> {% endcomment %}
+<script src="{% static 'static/export/jquery.dataTables.min.js' %}"></script>
+
+<!-- select2 -->
+<link rel="stylesheet" href="static/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="static/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+
+<link rel="stylesheet" href="static/export/jquery.dataTables.min.css">
+
+<link rel="stylesheet" type="text/css" href="static/extra.css">
+
+
+<script>
+  $(function(){
+      $(document).ready(function(){
+          $("#new_item").modal('show');
+      });
+  })
+</script>
+
+{% if messages %}
+
+<div class="modal fade" id="new_item" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Добавлен справочник</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="messages">
+          {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-12">
+        <nav class="navbar navbar-expand-lg  navbar-light bg-transparent">
+          <a class="navbar-brand" href="#">
+              <img src="{% static 'PO/journal.png' %}" width="60" height="60" alt="">
+            </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              {% for name in menu %}
+              <li class="nav-item">
+                <a class="nav-link" href="">{{ name.name }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div><hr>
+</section>
+
+{% for dict in formset.errors %}
+{% for error in dict.values %}
+{% if error %}
+    <div class="alert alert-warning alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <h5><i class="icon fas fa-exclamation-triangle"></i>Неточность при заполнении</h5>
+      {{ error }}
+    </div>
+    {% endif %}
+{% endfor %}
+{% endfor %}
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <!-- Default box -->
+        <div class="card collapsed-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <a href='' class="link-info" data-toggle="modal" data-target="#modal-info">
+              Посмотреть последние добавленные 
+            </a>
+          
+          <div class="modal fade" id="modal-info" aria-hidden="true" style="display: none;">
+                  <div class="modal-dialog">
+                    <div class="modal-content bg-info">
+                      <div class="modal-header">
+                        <h4 class="modal-title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Последние записи</font></font></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Закрывать">
+                          <span aria-hidden="true"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">×</font></font></span></button>
+                      </div>
+                      <div class="modal-body">
+                        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+              <div class="list-group">
+                        {% for obj in all_data %}
+                        <a  class="list-group-item-action flex-column align-items-start">
+                          <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">-{{ obj.quide.name }}</h5>
+                            
+                           
+                          </div>
+                          <p class="mb-1">Дата: {{ obj.up|date:'F Y' }}. Значение: {{ obj.value }}.  </p>
+                        </a>
+                        {% endfor %}
+          
+            </div>
+          
+                        </font></font></p>
+                      </div>
+                      <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-outline-light" data-dismiss="modal"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Закрывать</font></font></button>
+                      <a href="{% url 'zhournal_list' %}">Подробнее</a>
+                      </div>
+                    </div>
+                    <!-- /.modal-content -->
+                  </div>
+                  <!-- /.modal-dialog -->
+                </div>
+
+            </h3>
+
+          </div>
+          
+
+          <!-- /.card-body -->
+         
+          <!-- /.card-footer-->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<script type="text/javascript">
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+</script>
+
+<section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-8">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Добавление данных</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Свернуть">
+                    <i class="fas fa-minus"></i></button>
+
+                </div>
+              </div>
+              <div class="card-body p-2 change_input" id="print-content">
+                <form method="POST" id="post-form">
+                  {% csrf_token %}
+                {{ formset.management_form }}
+                
+                 <table id="example500" class="table table-bordered table-striped" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>Наименование справочника</th>
+                      <th>Учетный период</th>
+                      <th>Значение</th>
+                      <th>Действия</th>
+       
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                    {% for form in formset %}
+                    <tr class='sa'>
+                      <td>{{ form.quide }}
+                  &nbsp&nbsp<a class="related-widget-wrapper-link change-related" id="change_id_obj" title="Изменить выбранный объект" href="#">
+                   <img src="/static/admin/img/icon-changelink.svg" alt="Изменить"></a>
+                        
+                           &nbsp&nbsp<a title="Добавить ещё один объект" data-toggle="modal" data-target="#ModalCenter"> 
+                          <img src="/static/admin/img/icon-addlink.svg" alt="Добавить"></a> 
+
+                      </td>
+                      <td>{{ form.up }}</td>
+                      <td>{{ form.value }}</td>
+              
+                      <td><a id="delete_link" href="#" ><img src="{% static 'delete.png' %}" width="20" height="20" alt=""></a></td>
+                    </tr>
+                    
+                    {% endfor %}
+                  
+                  </tbody>
+                   <tfoot>
+                      <tr>
+                      <th>Наименование справочника</th>
+                      <th>Учетный период</th>
+                      <th>Значение</th>
+
+
+                      <th><button id="add-form" type="button" class="btn btn-default">
+                      <i class="fa fa-plus"></i>
+                      </button>
+                      </th>
+                      </tr>
+                  </tfoot>
+                  
+                </table>
+                
+                <button type="submit" id="add_data" class="btn btn-primary">Добавить данные</button>
+              </form>
+              </div>
+              <!-- /.card-body -->
+             
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+
+          <div class="col-4 invisible">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Дерево</h3>
+                  
+                
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Свернуть">
+                    <i class="fas fa-minus"></i></button>
+
+                </div>
+              </div>
+              
+              <div class="card-body p-2 recursion" id="print-content">
+                <ul>
+                  
+                  {% for tag in tags %}
+                   <li> 
+                     {% include 'oo/move_zhournal/list.html' %}</li>
+                  {% endfor %}
+                
+                </ul>
+                </div>
+             
+              
+              <!-- /.card-body -->
+             
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+
+
+        </div>
+      </div>
+    </section>
+
+  <!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Добавление справочника</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" id="post-form2" action="{% url 'post-quide' %}">
+          {% csrf_token %}
+        <div class="card-body">
+          
+          <div class="form-group">
+            <label >Родитель</label>
+            {{ form.ancestor }}
+          </div>
+
+
+          <div class="form-group">
+            <label >Наименование</label>
+            {{ form.name }}
+          </div>
+          <div class="form-group">
+            <label >Формула</label>
+            {{ form.formula }}
+            
+          </div>
+
+
+          {% for key,item in form.errors.items %}
+            {% if item %}
+
+                <div class="alert alert-warning alert-dismissible">
+                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                  <h5><i class="icon fas fa-exclamation-triangle"></i>Неточность при заполнении</h5>
+                  {{item}}
+                </div>
+
+              {% else %}
+            {% endif %}
+          {% endfor %}
+
+
+          <div class="form-check">
+          </div>
+        </div>
+      </div>
+      <div class="card collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title">Арифметические операции</h3>
+            
+        </div>
+        <div class="card-header p-2 operations" >
+          <ul class="nav nav-pills">
+            <style type="text/css">
+            .operations ul li a:hover {
+                background: blue;
+                color:red;
+            }
+
+            </style>
+            {% for o in operations %}
+            <li class="nav-item">
+              <a class="nav-link " href="" >{{ o }}</a>
+              
+            </li>
+            {% endfor %}
+           
+          </ul>
+        </div><!-- /.card-header -->
+        <!-- /.card-body -->
+        <!-- /.card-footer-->
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h3 class="card-title">Переменные</h3>
+            
+          
+          <div class="card-tools">
+            <button type="button"  class="btn btn-tool" aria-expanded="false" data-card-widget="collapse" data-target="#collapseExample" data-toggle="tooltip" title="Свернуть">
+              <i class="fas fa-minus"></i></button>
+
+          </div>
+        </div>
+        <div class="card-header p-2 collapse2" >
+          <ul class="nav nav-pills">
+            {% for name in menu %}
+              <li class="nav-item">
+                <a class="nav-link " href="" data-toggle="tab">{{ name.name }}</a>
+              </li>
+            {% endfor %}
+
+          </ul>
+        </div><!-- /.card-header -->
+
+        <div class="card-body p-2 recursion2" id="print-content">
+          
+          </div>
+        <!-- /.card-body -->
+       
+        <!-- /.card-footer-->
+      </div>
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+
+
+<script src="static/plugins/select2/js/select2.full.min.js"></script>
+
+    <script>
+     
+      // Для редактирования справочника
+      $('#id_form-'+0+'-quide').change(function(){
+        var value = $('#id_form-'+0+'-quide').val(); 
+        $('#change-'+0+'-quide').attr('href', '/admin/move_journal/quide/'+value+'/change/?_to_field=id&_popup=1');
+        })
+     
+      let bForm = document.querySelectorAll(".sa") // первая строка tr
+      let container = document.querySelector("#post-form") // отправляемая post форма
+      let addButton = document.querySelector("#add-form") // кнопка добавления строки
+      let totalForms = document.querySelector("#id_form-TOTAL_FORMS") // количество форм в добавляемой таблице
+
+      let counter = 1 // счетчик
+
+      let formNum = bForm.length-1 // количество строк
+
+      addButton.addEventListener('click', addForm) // событие по клику
+
+      // функция добавления новой строки в таблицу
+      function addForm(e){
+          e.preventDefault()
+         
+          let newForm = bForm[0].cloneNode(true) // дублирую первую строку
+
+          let formRegex = RegExp(`form-(\\d){1}-`,'g')
+          let formRegexChange = RegExp(`change-(\\d){1}-`,'g')
+
+          formNum++
+          counter++
+          newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`) // добавляю номер 
+          newForm.innerHTML = newForm.innerHTML.replace(formRegexChange, `change-${formNum}-`) // добавляю номер
+
+          $("#example500 tbody tr:last-child").after(newForm) // добавляю полученную строку в конец
+          //totalForms.setAttribute('value', `${formNum+1}`)
+          var current_count = $('#id_form-TOTAL_FORMS').val(); // общее количество строк
+          current_count = parseInt(current_count)+1; // добавляю к нему единицу
+          $('#id_form-TOTAL_FORMS').val(current_count); // присваиваю это значение
+
+          $('#ex input:last').attr('id', 'test'+formNum)
+          
+          // для редактирования справочника
+          $('#id_form-'+formNum+'-quide').change(function(){
+            var value = $('#id_form-'+formNum+'-quide').val(); 
+            $('#change-'+formNum+'-quide').attr('href', '/admin/move_journal/quide/'+value+'/change/?_to_field=id&_popup=1');
+            }) 
+      }
+
+      // для удаления выбранной строки
+      $("#example500").on('click', '#delete_link', function() {
+        $(this).closest('tr td').prevAll('td:last').children().attr('id')
+        // удаляю выбранную строку
+        $(this).closest('tr').remove();
+        // сокращаю количество добавляемых строк
+        var current_count = $('#id_form-TOTAL_FORMS').val()-1;
+        $('#id_form-TOTAL_FORMS').val(current_count);
+
+        var tags = []
+        tags = []
+
+        // подправляю атрибуты всех строк, так как после удаления строки все сбилось
+        //let count = $("#example500 tbody tr").length;
+        $("#example500 tbody tr").each(function(index, element){
+          tags.push($(this).find("td>:first-child").val())
+          let formRegex = RegExp(`form-(\\d){1}-`,'g');
+          let formRegexChange = RegExp(`change-(\\d){1}-`,'g');
+
+
+          let part1 = $(this).html().replace(formRegex, `form-${index}-`);
+          $(this).html(part1);
+          console.log('first change: ', $(this).html())
+          let part2 = $(this).html().replace(formRegexChange, `change-${index}-`);
+          $(this).html(part2);
+          console.log('second change: ', $(this).html())
+
+              
+          $('#id_form-'+index+'-quide').change(function(){
+            var value = $('#id_form-'+index+'-quide').val(); 
+            $('#change-'+index+'-quide').attr('href', '/admin/move_journal/quide/'+value+'/change/?_to_field=id&_popup=1');
+            }) 
+        })
+        for (let i = 0; i < current_count; i++) {   
+          $("#id_form-"+i+"-quide").val(tags[i]);
+        }
+      })
+
+   
+
+
+  </script>
+  <script type="text/javascript">
+    // функция для добавления текста в область текущей позиции курсора
+    function typeInTextarea(el, newText) {
+        var start = el.prop("selectionStart")
+        var end = el.prop("selectionEnd")
+        var text = el.val()
+        var before = text.substring(0, start)
+        var after  = text.substring(end, text.length)
+        el.val(before + newText + after)
+        el[0].selectionStart = el[0].selectionEnd = start + newText.length
+        el.focus()
+    }
+
+
+    $(".collapse ul li a").each(function(){
+      $(this).click(function(e){
+        e.preventDefault()
+        var value = $(this).text();
+        $(".collapse ul li a").removeClass('active')
+        $(this).addClass('active')
+        console.log("Форма подтверждена!")  // просто проверка
+        
+        create_post(value);
+        });
+      });
+
+      $(".collapse2 ul li a").each(function(){
+        $(this).click(function(e){
+          e.preventDefault()
+          var value = $(this).text();
+          $(".collapse2 ul li a").removeClass('active')
+          $(this).addClass('active')
+          console.log("Форма подтверждена!")  // просто проверка
+          create_post2(value);
+          });
+        });
+
+
+      $(".operations ul li a").each(function(){
+        $(this).click(function(e){
+          e.preventDefault()
+          var value = $(this).text();
+//$(".operations ul li a").removeClass('buttonClick')
+         // $(this).addClass('buttonClick')
+                 
+          //var cursorPos = $('#id_formula').prop('selectionStart');
+          //var v = $('#id_formula').val();
+          //var textBefore = v.substring(0,  cursorPos);
+          //var textAfter  = v.substring(cursorPos, v.length);
+
+          //$('#id_formula').val(textBefore + value + textAfter);
+          
+          if (value=='reset'){
+            $('#id_formula').val('');
+          } else {
+              //$('#id_formula').val(textBefore + value + textAfter);
+              typeInTextarea($('#id_formula'), value)
+            }
+          });
+        });
+
+        $('#reset').click(function(){
+          $('#id_formula').val('')
+        })
+
+      $('#id_form-0-up').change(function(){
+        
+        let total_count = $('#id_form-TOTAL_FORMS').val()
+        for (let i=1; i<total_count; i++){
+            $('#id_form-'+i+'-up').val($('#id_form-0-up').val())
+        }
+      })
+
+    function create_post(value) {
+        console.log("create post работает! ") // просто проверка
+    
+    $.ajax({
+        url : "autocomplete/", // endpoint
+        type : "GET", 
+        data : { indicator : value, }, // отправляемые данные из request
+
+        // обработка успещного ответа
+        success : function(json) {
+             $('.invisible').removeClass('invisible')
+
+
+             console.log('test', json.name_group)
+             let name_group = json.name_group
+             //$('.recursion').html('123456')
+             let text = ''    
+             let tags = [];
+             tags = [];
+             $('[data-toggle="tooltip"]').tooltip()
+
+             function children(massiv){
+              text = text + '<ul>'
+              if (massiv.length!=0){
+                for (let tag of massiv) {
+                   // console.log('вложенность ', tag.children.length)
+                   if (tag.children.length == 0){
+                    if (tag.flag=='green'){
+                    text = text + '<li ><a data-toggle="tooltip" title="'+tag.data+'" href="test" style="color: green;" data-id='+tag.id+'>'} else {
+                      tags.push(tag.id)
+                      text = text + '<li><a data-toggle="tooltip" title="Не заполнено" href="test" style="color: red;" data-id='+tag.id+'>'
+                    }}else{
+                      text = text + '<li>'
+                    }
+                    text = text + tag.name
+                    //tags.push(tag.id)
+                    text = text + '</li></a>'
+                    // ------------------------------
+                    if (tag.children.length!=0){
+                      //text = text + '</ul>'
+                    children(tag.children)}
+                }
+                text = text + '</ul>'
+                } else{}
+            }
+          
+            function recursion(massiv){
+                for (let tag of massiv) {
+                      text = text + '<ul><li>'
+                      text = text + tag.name
+                      children(tag.children);
+                      text = text + '</li></ul>'
+                }
+            }
+
+          recursion(name_group)
+
+          $('.recursion').html(text)
+          // $('.recursion2').html(text)
+          
+
+          $("[href='test']").each(function(){
+            $(this).click(function(e){
+              e.preventDefault();
+              var value = $(this).attr('data-id');
+              addAutocomplite(value);
+              // $("#example500 tbody tr:last-child").remove(); 
+              // var current_count = $('#id_form-TOTAL_FORMS').val()-1;
+              // $('#id_form-TOTAL_FORMS').val(current_count);
+            });
+        });
+
+// ----------------------------
+
+ // удаляю все строки, кроме первых двух 
+ $("#example500 tr:gt(1)").remove();
+ let bForm = document.querySelectorAll(".sa")
+ 
+ let count = tags.length
+ let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+ let counter = 1
+ let formNum = bForm.length-1
+ console.log('bForm.length', bForm.length)
+ console.log('formNum', formNum)
+ console.log('count', count)
+ for (let i = 0; i < count; i++) {          
+ let newForm = bForm[0].cloneNode(true)
+ // alert(newForm)
+ let formRegex = RegExp(`form-(\\d){1}-`,'g')
+ let formRegexChange = RegExp(`change-(\\d){1}-`,'g')
+
+ formNum++
+ counter++
+ newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+ newForm.innerHTML = newForm.innerHTML.replace(formRegexChange, `change-${formNum}-`)
+ //alert(newForm.innerHTML)
+
+ $("#example500 tbody tr:last-child").after(newForm)
+
+ totalForms.setAttribute('value', `${formNum+2}`)
+ console.log('tags[i]  ', tags[i])
+ $("#id_form-"+i+"-quide").val(tags[i]);
+
+ $("#id_form-"+i+"-quide").next().attr('href', '/admin/move_journal/quide/'+tags[i]+'/change/?_to_field=id&_popup=1')
+ //$('#id_form-'+i+'-quide #change_id_obj').attr('href', '/admin/move_journal/quide/'+tags[i]+'/change/?_to_field=id&_popup=1')
+
+// $('#example500 tbody tr td a:first').attr('date-id', tags[i])
+ //$('#post-form3').attr('action', '/change_quide/<int:pk>')
+ }
+ 
+ $("#example500 tbody tr:last-child").remove();
+ $("#id_form-TOTAL_FORMS").val(parseInt($("#id_form-TOTAL_FORMS").val())-2)
+ //document.location.reload(true)
+
+// ------------------------
+          },
+        
+
+        // обработка неуспешного ответа
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Извините, мы получили следующую ошибку  "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // добавляем ошибку в DOM
+            console.log(xhr.status + ": " + xhr.responseText); // добавляем информацию об ошибке
+        }
+    });
+};
+
+
+
+function create_post2(value) {
+  console.log("create post работает! ") // просто проверка
+  
+  $.ajax({
+      url : "autocomplete/", // endpoint
+      type : "GET", 
+      data : { indicator : value, }, // отправляемые данные из request
+
+      // обработка успещного ответа
+      success : function(json) {
+           console.log('test', json.name_group)
+           let name_group = json.name_group
+           //$('.recursion').html('123456')
+           let text = ''    
+
+           function children(massiv){
+            text = text + '<ul>'
+            if (massiv.length!=0){
+              for (let tag of massiv) {
+                text = text + '<li><a href="test2" data-id='+tag.id+'>'
+                  text = text + tag.name
+                  text = text + '</li></a>'
+              }
+              text = text + '</ul>'
+              }else{}
+          }
+        
+          function recursion(massiv){
+              for (let tag of massiv) {
+                    text = text + '<ul><li>'
+                    text = text + tag.name
+                    children(tag.children);
+                    text = text + '</li></ul>'
+              }
+          }
+
+        recursion(name_group)
+        $('.recursion2').html(text)
+        
+      $("[href='test2']").each(function(){
+        $(this).click(function(e){
+          e.preventDefault();
+          var value = $(this).text();
+          typeInTextarea($('#id_formula'), '!'+value+'!')
+          //addFormula(value);
+          // $("#example500 tbody tr:last-child").remove(); 
+          // var current_count = $('#id_form-TOTAL_FORMS').val()-1;
+          // $('#id_form-TOTAL_FORMS').val(current_count);
+        });
+    });
+
+        },
+      
+
+      // обработка неуспешного ответа
+      error : function(xhr,errmsg,err) {
+          $('#results').html("<div class='alert-box alert radius' data-alert>Извините, мы получили следующую ошибку  "+errmsg+
+              " <a href='#' class='close'>&times;</a></div>"); // добавляем ошибку в DOM
+          console.log(xhr.status + ": " + xhr.responseText); // добавляем информацию об ошибке
+      }
+  });
+};
+
+function addAutocomplite(value){
+    let newForm = bForm[0].cloneNode(true)
+    let formRegex = RegExp(`form-(\\d){1}-`,'g')
+    let formRegexChange = RegExp(`change-(\\d){1}-`,'g')
+
+    formNum++
+    counter++
+    newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+    newForm.innerHTML = newForm.innerHTML.replace(formRegexChange, `change-${formNum}-`)
+
+
+    
+    $("#example500 tbody tr:last-child").after(newForm)
+    $("#example500 tbody tr:last-child td:first select").val(value) 
+    
+    //totalForms.setAttribute('value', `${formNum+1}`)
+    var current_count = $('#id_form-TOTAL_FORMS').val();
+    current_count = parseInt(current_count)+1;
+    $('#id_form-TOTAL_FORMS').val(current_count);
+
+    $('#ex input:last').attr('id', 'test'+formNum)
+    
+    $('#id_form-'+formNum+'-quide').change(function(){
+      var value = $('#id_form-'+formNum+'-quide').val(); 
+      $('#change-'+formNum+'-quide').attr('href', '/admin/move_journal/quide/'+value+'/change/?_to_field=id&_popup=1');
+    })
+}
+
+
+function replaceWithWrapper(selector, property, callback) {
+  function findDescriptor(obj, prop){
+     if (obj != null){
+        return Object.hasOwnProperty.call(obj, prop)?
+           Object.getOwnPropertyDescriptor(obj, prop):
+           findDescriptor(Object.getPrototypeOf(obj), prop);
+     }
+  }
+
+  jQuery(selector).each(function(idx, obj) {
+     var {get, set} = findDescriptor(obj, property);
+
+     Object.defineProperty(obj, property, {
+        configurable: true,
+        enumerable: true,
+
+        get() { 
+           var v = get.call(this);  
+           //console.log("get '+property+':", v, this);
+           return v;
+        },
+        
+        set(v) { 
+           //console.log("set '+property+':", v, this);
+           set.call(this, v);
+           callback(obj, property, v)
+        }
+     });
+  });
+}
+
+replaceWithWrapper('#id_form-TOTAL_FORMS', 'value', function() {
+  console.log('#id_form-TOTAL_FORMS value changed!');
+        
+  let count =  $('#id_form-TOTAL_FORMS').val()
+  // для редактирования наим справочника
+  console.log('count 1', count);
+  for (i = 0; i < count; i++) {
+    var value = $('#id_form-'+i+'-name_of_analysis').val(); 
+    console.log('value', value);
+    $('#change-'+i+'-name_of_analysis').attr('href', '/admin/grain_log/nameanalysis/'+value+'/change/?_to_field=id&_popup=1');
+  }
+
+  console.log('count 2', count);
+});
+
+
+
+
+// Функция для обработки csrf для ajax
+$(function() {
+    // This function gets cookie with a given name
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    /*
+    The functions below will create a header with csrftoken
+    */
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    function sameOrigin(url) {
+        // test that a given url is a same-origin URL
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                // Send the token to same-origin, relative URLs only.
+                // Send the token only if the method warrants CSRF protection
+                // Using the CSRFToken value acquired earlier
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+});
+    </script>
+
+
+
+  
+  <script>
+ $(function(){
+    //Initialize Select2 Elements
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+
+  })
+</script>
+
+    {% else %}<p>Вы вошли как {{ user }}. Зарегистрируйтесь</p> {% endif %}
+    <!-- /.content -->
+  {% endblock content %}
+
+
+

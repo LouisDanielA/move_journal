@@ -1,0 +1,359 @@
+{% extends 'po/base.html' %}
+{% load static %}
+    <!-- Main content -->
+  {% block content %}
+    {% if request.user.is_authenticated %}
+  <script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+<script src="{% static 'static/export/jquery-3.5.1.js' %}"></script>
+<script src="{% static 'static/export/jquery.dataTables.min.js' %}"></script>
+<link rel="stylesheet" href="static/export/jquery.dataTables.min.css">
+
+<!-- select2 -->
+<link rel="stylesheet" href="static/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="static/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<script src="static/plugins/select2/js/select2.full.min.js"></script>
+
+
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#example').DataTable( {
+            initComplete: function () {
+                this.api().columns([2]).every( function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo( $(column.footer()).empty() )
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+     
+                            column
+                                .search( val ? '^'+val+'$' : '', true, false )
+                                .draw();
+                        } );
+     
+                    column.data().unique().sort().each( function ( d, j ) {
+                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                    } );
+                } );
+            }
+        } );
+    } );
+</script>
+
+{% comment %} <script>
+        $(document).ready(function() {
+            $('#example1').DataTable({
+                filterDropDown: {
+                    columns: [
+                        idx: 3
+                    ]
+                }
+            } );
+        } );
+    </script> {% endcomment %}
+
+
+
+
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-12">
+        <nav class="navbar navbar-expand-lg  navbar-light bg-transparent">
+          <a class="navbar-brand" href="#">
+              <img src="/static/PO/journal.png" width="50" height="50" alt="">
+            </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'zhournal_list' %}">Назад<span class="sr-only">(current)</span></a>
+                
+              </li>
+
+            </ul>
+          </div>
+        </nav>
+      </div>
+      
+    </div>
+  </div><hr>
+  
+</section>
+
+
+
+
+  <script type="text/javascript">
+          var checkbox = $('#flexCheckDefault')
+          checkbox.click(function(){
+          if (checkbox.is(':checked')){
+            $('#stop').attr('disabled',true);
+            const s = new Date(2019, 01);
+            const e = new Date(2200, 01);
+            $('#datetimepicker8').datetimepicker('minDate', s);
+            $('#datetimepicker7').datetimepicker('maxDate', e);
+            console.log('checked in check')
+          }
+          else{
+              $('#stop').removeAttr('disabled');
+
+          }
+          });
+          
+          $(function () {
+            $('#datetimepicker7').datetimepicker({
+                locale: 'ru',
+                format: 'YYYY-MM'
+            });
+            $('#datetimepicker8').datetimepicker({
+                locale: 'ru',
+                format: 'YYYY-MM'
+            });
+
+
+          $("#datetimepicker7").on("change.datetimepicker", function (e) {
+              var checkbox = $('#flexCheckDefault')
+              if (checkbox.is(':checked')){
+                    var start = $('#start').val()
+                    var stop = $('#stop').val()
+                    $('#stop').val(start)
+                }
+                else {
+                $('#datetimepicker8').datetimepicker('minDate', e.date);
+              }
+            });
+
+            $("#datetimepicker8").on("change.datetimepicker", function (e) {
+              var checkbox = $('#flexCheckDefault')
+               if (checkbox.is(':checked')){
+                    var start = $('#start').val()
+                    var stop = $('#stop').val()
+                    $('#start').val(stop)
+                }
+                else {
+                  $('#datetimepicker7').datetimepicker('maxDate', e.date);
+              }
+            });
+         
+        });
+
+</script>
+<script>
+   
+    $(function(){
+        $('table td:first-child').each(function (i) {
+            $(this).html(i+1);
+        });
+    });
+   
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            locale: 'ru',
+            format: 'YYYY-MM',
+        });
+     
+    });
+    $('#id_UP').datetimepicker().on('dp.change', function (e) {console.log(e); });
+</script>
+    <section class="content">
+      <br>
+      <div class="container-fluid">
+        
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-12">
+            
+            <div class="card">
+              
+              <div class="card-header">
+                <h3 class="card-title">Журнал движения и сырья — справочники</h3>
+                <div class="card-tools">
+                  <span><a href="{% url 'move_quide_list' %}" title="Справочники"><img src="/static/admin/img/icon-addlink.svg"></a></span>
+              </div>
+                <div class="card-tools">
+                </div>
+              </div>
+              <div class="card-body p-2" id="print-content">
+                <table id="example" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Полное наименование</th>
+                      <th>Формула</th>
+                      <th>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for obj in object_list %}
+                    <tr>
+                      <td></td>
+                      <td>{{ obj.name }}</td>
+                      {% if obj.formula == None %}
+                      <td>Нет</td>
+                      {% else %}
+                      <td>Есть</td>
+                      {% endif %}
+                      <td>
+                        &nbsp&nbsp<a class="related-widget-wrapper-link change-related" id="change_id_obj" date-id={{obj.id}} data-toggle="modal" data-target="#ModalCenter" title="Изменить выбранный объект" >
+                      <img src="/static/admin/img/icon-changelink.svg" alt="Изменить"></a>
+                   
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                    <tfoot>
+                    <tr>
+                      <th></th>
+                      <th> </th>
+                      <th> </th>
+                      <th> </th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Редактирование справочника</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" id="post-form2" action="{% url 'post-quide' %}">
+          {% csrf_token %}
+        <div class="card-body">
+          <div class="form-group">
+            <label >Родитель</label>
+            {{ form.ancestor }}
+          </div>
+          <div class="form-group">
+            <label >Наименование</label>
+            {{ form.name }}
+          </div>
+          <div class="form-group">
+            <label >Формула</label>
+            {{ form.formula }}
+          </div>
+
+
+          {% for key,item in form.errors.items %}
+            {% if item %}
+                <div class="alert alert-warning alert-dismissible">
+                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                  <h5><i class="icon fas fa-exclamation-triangle"></i>Неточность при заполнении</h5>
+                  {{item}}
+                </div>
+              {% else %}
+            {% endif %}
+          {% endfor %}
+
+
+          <div class="form-check">
+          </div>
+        </div>
+      </div>
+      <div class="card collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title">Арифметические операции</h3>
+            
+        </div>
+        <div class="card-header p-2 operations" >
+          <ul class="nav nav-pills">
+            <style type="text/css">
+            .operations ul li a:hover {
+                background: blue;
+                color:red;
+            }
+
+            </style>
+            {% for o in operations %}
+            <li class="nav-item">
+              <a class="nav-link " href="" >{{ o }}</a>
+            </li>
+            {% endfor %}
+           
+          </ul>
+        </div><!-- /.card-header -->
+        <!-- /.card-body -->
+        <!-- /.card-footer-->
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h3 class="card-title">Переменные</h3>
+            
+          
+          <div class="card-tools">
+            <button type="button"  class="btn btn-tool" aria-expanded="false" data-card-widget="collapse" data-target="#collapseExample" data-toggle="tooltip" title="Свернуть">
+              <i class="fas fa-minus"></i></button>
+
+          </div>
+        </div>
+        <div class="card-header p-2 collapse2" >
+          <ul class="nav nav-pills">
+            {% for name in menu %}
+              <li class="nav-item">
+                <a class="nav-link " href="" data-toggle="tab">{{ name.name }}</a>
+              </li>
+            {% endfor %}
+
+          </ul>
+        </div><!-- /.card-header -->
+
+        <div class="card-body p-2 recursion2" id="print-content">
+          
+          </div>
+        <!-- /.card-body -->
+       
+        <!-- /.card-footer-->
+      </div>
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+<script>
+ $(function(){
+$('#change_id_obj').each(function(){
+  $(this).click(function(){
+    $(this).attr('date-id')
+  })
+})
+
+
+    //Initialize Select2 Elements
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+
+  })
+</script>
+    {% else %}<p>Вы вошли как {{ user }}. Зарегистрируйтесь</p>{% endif %}
+    <!-- /.content -->
+  {% endblock content %}

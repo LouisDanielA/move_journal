@@ -1,0 +1,117 @@
+{% extends 'po/base.html' %}
+    <!-- Main content -->
+  {% block content %}
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Добро пожаловать</h1>
+            Добро пожаловать в систему сбора и анализа отчетных данных производственных отчетов
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+      <br>
+      <div class="container-fluid"-->
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          {% if request.user.is_authenticated %}
+          <!--div class="col-md-4 col-sm-6 col-12">
+            <div class="info-box bg-success">
+              <span class="info-box-icon"><a title="111" href="#" class="bg-success">&nbsp;<i class="fas fa-search"></i>&nbsp;</a></span>
+              <div class="info-box-content">
+                <span class="info-box-text"><h5 title="111">111</h5></span>
+                <h3><span class="info-box-number"-->
+                      <!--div class="progress progress-xs" title="Отклонение {{ tagSCADA.StdDev }}">
+                        <div class="progress-bar progress-bar-danger" style="width: {{ tagSCADA.StdDev|stringformat:'.2f' }}%"></div>
+                      </div-->
+        <!--/span></h3>
+                <p title="{{ tag.desc2 }} - {{ tag.desc1 }}">{{ tag.desc2 }}<br>{{ tag.desc1|truncatechars:20 }}</p>
+              </div>
+            </div>
+          </div-->
+          {% else %}
+          <div class="col-md-12 col-sm-12 col-12"><p>Вы вошли как {{ user }}. Зарегистрируйтесь</p></div>
+          {% endif %}
+        </div><hr>
+        {% if request.user.is_authenticated %}
+        <!--div class="row">
+          <div class="col-md-6 col-sm-6 col-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Работа с отчетами</h3>
+                <div class="card-tools">
+                  <a onClick="javascript:CallPrint('print-content');" title="Распечатать проект"><i class="fas fa-print"></i></a>
+                </div>
+                
+              </div>
+              
+              <div class="card-body p-2" id="print-content">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Дата</th>
+                      <th>Наименование</th>
+                      <th>Описание</th>
+                      <th>Статус</th>
+                      <th>Редактировать</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>111</td>
+                      <td>111</td>
+                      <td>111</td>
+                      <td>111</td>
+                      <td><a title="111" href="#">111</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-sm-6 col-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Работа с справочниками</h3>
+                <div class="card-tools">
+                  <a onClick="javascript:CallPrint('print-content');" title="Распечатать проект"><i class="fas fa-print"></i></a>
+                </div>
+                
+              </div>
+              
+              <div class="card-body p-2" id="print-content">
+                <table id="example2" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Тег</th>
+                      <th>Описание RU</th>
+                      <th>Описание EN</th>
+                      <th>Отклонения</th>
+                      <th>Min</th>
+                      <th>Max</th>
+                      <th>Показания</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>111</td>
+                      <td>111</td>
+                      <td>111</td>
+                      <td>111</td>
+                      <td>111</td>
+                      <td>111</td>
+                      <td><a title="111" href="#">111</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div-->
+        {% endif %}
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  {% endblock content %}

@@ -1,0 +1,56 @@
+
+{% extends 'oo/move_zhournal/move_journal.html' %}
+{% load static %}
+
+
+{% block content %}
+<script>
+    $(document).ready(function(){
+        $("#ModalCenter").modal('show');
+    });
+</script>
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Неточность при заполнении</h5>
+          
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        
+          <div class="card-body">
+
+            {% for key,item in form.errors.items %}
+              {% if item %}
+  
+                  <div class="alert alert-warning alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-exclamation-triangle"></i></h5>
+                    {{item}}
+                  </div>
+  
+                {% else %}
+              {% endif %}
+            {% endfor %}
+  
+  
+            <div class="form-check">
+            </div>
+          </div>
+        </div>
+       
+        <div class="modal-footer">
+            <a class="btn btn-primary" href="{% url 'move_view' %}" role="button">Назад</a>
+        
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  
+  
+  {% endblock content %}

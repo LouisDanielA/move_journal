@@ -1,0 +1,341 @@
+{% extends 'po/base.html' %}
+{% load static %}
+    <!-- Main content -->
+  {% block content %}
+    {% if request.user.is_authenticated %}
+  <script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+<script src="{% static 'static/export/jquery-3.5.1.js' %}"></script>
+<script src="{% static 'static/export/jquery.dataTables.min.js' %}"></script>
+<link rel="stylesheet" href="static/export/jquery.dataTables.min.css">
+
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#example').DataTable( {
+            initComplete: function () {
+                this.api().columns([1,2]).every( function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo( $(column.footer()).empty() )
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+     
+                            column
+                                .search( val ? '^'+val+'$' : '', true, false )
+                                .draw();
+                        } );
+     
+                    column.data().unique().sort().each( function ( d, j ) {
+                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                    } );
+                } );
+            }
+        } );
+    } );
+</script>
+
+{% comment %} <script>
+        $(document).ready(function() {
+            $('#example1').DataTable({
+                filterDropDown: {
+                    columns: [
+                        idx: 3
+                    ]
+                }
+            } );
+        } );
+    </script> {% endcomment %}
+
+
+
+<script type="text/javascript">
+  function get_id() {
+  var select = document.getElementById('id_Ancestor');
+  var value = select.options[select.selectedIndex].value;
+  console.log(value); 
+  document.getElementById("change_id_Ancestor").href="/admin/po8/eecountersguide/"+value+"/change/?_to_field=id&_popup=1";
+
+ 
+  };
+
+
+</script>
+
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-12">
+        <nav class="navbar navbar-expand-lg  navbar-light bg-transparent">
+          <a class="navbar-brand" href="#">
+              <img src="{% static 'lab.png' %}" width="50" height="50" alt="">
+            </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'analysis_list' %}">Просмотр данных<span class="sr-only">(current)</span></a>
+                
+              </li>
+               <li class="nav-item ">
+                <a class="nav-link" href="{% url 'analysis_data' %}">Добавление<span class="sr-only">(current)</span></a>
+              </li>
+             <li class="nav-item dropdown ">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     Массовое добавление данных
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item " href="{% url 'analysis_mas' %}">Медная цепочка</a>
+                      <a class="dropdown-item" href="{% url 'analysis_mas2' %}">Золотая цепочка</a>
+                  </li>
+
+            </ul>
+          </div>
+        </nav>
+      </div>
+      
+    </div>
+  </div><hr>
+  
+</section>
+
+
+
+<section class="content">
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Период</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Свернуть">
+                    <i class="fas fa-minus"></i></button>
+
+                </div>
+              </div>
+              <div class="card-body" style="display: block;">
+                <form method ='GET' action={% url 'filter_list_balans' %}>
+                 <div class="row">
+              <div class="col-sm-6">
+                
+                <div class="form-group">
+                 
+                  <div class="row">
+                  <div class="col-sm-6">
+
+                  <div class="form-group">
+                  <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                   <input type='text' onchange='correct_dtp()' class='form-control datetimepicker-input form-control-sm' data-target="#datetimepicker7" id="start" name='start' value='{{start}}' required/>
+                 
+                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                  </div>
+                  </div>
+                  </div>
+                  <div class="col-sm-6">
+                  <div class="form-group">
+                  <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                    <input type='text' class='form-control datetimepicker-input form-control-sm' data-target='#datetimepicker8' id="stop" name='stop' value='{{stop}}' required {{ change_dateinput }} />
+                    
+                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+                
+                 &nbsp&nbsp <div class="form-check">
+                   <input class="form-check-input" type="checkbox" value="only_month" id="flexCheckDefault"  name = "flexCheckDefault"  {{ check_checkbox }}>
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Фильтровать по месяцу
+                    </label>
+
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer" style="display: block;">
+                 <button type="submit" class="btn btn-primary">Указать период</button>  
+         </form>
+              {% if request.path == '/filter-list/'  %}
+              &ensp;Выгрузить данные: 
+              <a href="{{ request.get_full_path }}&export_data=True">XLSX</a>
+              <img width="30" id="imagen" src="{% static 'PO/img/xlsx.png' %}" class="lazy" data-original="{% static 'PO/img/xlsx.png' %}" title="Получить отчет в XLSX"></a>
+              {% else %}
+              <i class="text-warning">&ensp;Для выгрузки данных Вам нужно указать период</i>
+            {% endif %}
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+  <script type="text/javascript">
+          var checkbox = $('#flexCheckDefault')
+          checkbox.click(function(){
+          if (checkbox.is(':checked')){
+            $('#stop').attr('disabled',true);
+            const s = new Date(2019, 01);
+            const e = new Date(2200, 01);
+            $('#datetimepicker8').datetimepicker('minDate', s);
+            $('#datetimepicker7').datetimepicker('maxDate', e);
+            console.log('checked in check')
+          }
+          else{
+              $('#stop').removeAttr('disabled');
+
+          }
+          });
+          
+          $(function () {
+            $('#datetimepicker7').datetimepicker({
+                locale: 'ru',
+                format: 'YYYY-MM'
+            });
+            $('#datetimepicker8').datetimepicker({
+                locale: 'ru',
+                format: 'YYYY-MM'
+            });
+
+
+          $("#datetimepicker7").on("change.datetimepicker", function (e) {
+              var checkbox = $('#flexCheckDefault')
+              if (checkbox.is(':checked')){
+                    var start = $('#start').val()
+                    var stop = $('#stop').val()
+                    $('#stop').val(start)
+                }
+                else {
+                $('#datetimepicker8').datetimepicker('minDate', e.date);
+              }
+            });
+
+            $("#datetimepicker8").on("change.datetimepicker", function (e) {
+              var checkbox = $('#flexCheckDefault')
+               if (checkbox.is(':checked')){
+                    var start = $('#start').val()
+                    var stop = $('#stop').val()
+                    $('#start').val(stop)
+                }
+                else {
+                  $('#datetimepicker7').datetimepicker('maxDate', e.date);
+              }
+            });
+         
+        });
+
+</script>
+<script>
+   
+    $(function(){
+        $('table td:first-child').each(function (i) {
+            $(this).html(i+1);
+        });
+    });
+   
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            locale: 'ru',
+            format: 'YYYY-MM',
+
+        });
+     
+    });
+    $('#id_UP').datetimepicker().on('dp.change', function (e) {console.log(e); });
+</script>
+    <section class="content">
+      <br>
+      <div class="container-fluid">
+        
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-12">
+            
+            <div class="card">
+              
+              <div class="card-header">
+                <h3 class="card-title">Балансовый анализ</h3>
+                <div class="card-tools">
+                </div>
+              </div>
+              <div class="card-body p-2" id="print-content">
+                <table id="example" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Наименование перерабатываемой руды</th>
+                      <th>Наименование справочника</th>
+
+                      <th>Смена</th>
+                      <th>Учетный период</th>
+                      <th>Данные</th>
+                      <th>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for obj in object_list %}
+                    <tr>
+                      <td></td>
+                      <td>
+                        {% for o in obj.name_field.all %}
+                        {{ o.name }} 
+                        {% endfor %}
+                      </td>
+                      <td>{{ obj.parent.name_analysis.name }}</td>
+                      
+    
+                      
+                      <td>{{ obj.get_type_of_shift_display }}</td>
+                      <td>{{ obj.up }}</td>
+                      <td>{{ obj.data }}</td>
+                      <td>
+                        &nbsp&nbsp<a class="related-widget-wrapper-link change-related" id="change_id_obj" title="Изменить выбранный объект" href="/admin/laboratory/analysisdata/{{obj.id}}/change/?_to_field=id&_popup=1">
+                      <img src="/static/admin/img/icon-changelink.svg" alt="Изменить"></a>
+
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                    <tfoot>
+                    <tr>
+                      <th></th>
+                      <th> </th>
+                      <th> </th>
+                      <th> </th>
+                      <th>  </th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div><!-- /.container-fluid -->
+    </section>
+    
+    {% else %}<p>Вы вошли как {{ user }}. Зарегистрируйтесь</p>{% endif %}
+    <!-- /.content -->
+  {% endblock content %}

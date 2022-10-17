@@ -1,0 +1,11 @@
+{% load move_journal_extras %}
+{{ tag.name|get_name }}
+{% if tag.children %}
+<ul>
+    {% for chil in tag.children %}
+        {% with tag=chil template_name='oo/move_zhournal/list.html' %}
+            <li > {% include template_name %}</li>
+        {% endwith %}
+    {% endfor %}
+</ul>
+{% endif %} 

@@ -1,0 +1,13 @@
+body{
+    background:#939393;
+}
+
+.buttonClick:hover{
+    background: orange;
+    color:white;
+}
+
+.operations ul li a:hover {
+    background: orange;
+    color:white;
+}
