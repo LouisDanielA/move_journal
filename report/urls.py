@@ -12,8 +12,7 @@ urlpatterns = [
     path('', include("move_journal.urls")),
 ] 
 
-    
-    
+# asd
 #print(settings.BASE_DIR, 'Привет', settings.MEDIA_URL, settings.MEDIA_ROOT)
 #if settings.DEBUG:
 #    urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
