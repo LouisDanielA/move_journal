@@ -32,7 +32,7 @@ def check_data():
         subject = 'Добрый день, начальник!'
         message = 'Не заполнены, некоторые поля за вчерашний день!'
         email_from = settings.EMAIL_HOST_USER
-        recipient_list = ['MizanbaevAE@polymetal.kz', ]
+        recipient_list = ['', ]
         send_mail(subject, message, email_from, recipient_list)
     
 
